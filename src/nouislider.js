@@ -10,10 +10,13 @@ angular.module('nouislider', []).directive('slider', function () {
       margin: '@',
       ngModel: '=',
       ngFrom: '=',
-      ngTo: '='
+      ngTo: '=',
+      thenCall: '&'
     },
     link: function (scope, element, attrs) {
-      var callback, fromParsed, parsedValue, slider, toParsed;
+
+      var callback, fromParsed, parsedValue, slider, toParsed, thenCall;
+      thenCall = scope.thenCall
       slider = $(element);
       callback = scope.callback ? scope.callback : 'slide';
       if (scope.ngFrom != null && scope.ngTo != null) {
@@ -39,7 +42,11 @@ angular.module('nouislider', []).directive('slider', function () {
           toParsed = parseFloat(to);
           return scope.$apply(function () {
             scope.ngFrom = fromParsed;
-            return scope.ngTo = toParsed;
+            scope.ngTo = toParsed;
+            if(thenCall && typeof(thenCall) == "function"){
+              thenCall(fromParsed, toParsed)
+            }
+            return toParsed;
           });
         });
         scope.$watch('ngFrom', function (newVal, oldVal) {
@@ -71,8 +78,13 @@ angular.module('nouislider', []).directive('slider', function () {
         slider.on(callback, function () {
           parsedValue = parseFloat(slider.val());
           return scope.$apply(function () {
-            return scope.ngModel = parsedValue;
+            scope.ngModel = parsedValue;
+            if(thenCall && typeof(thenCall) == "function"){
+              thenCall(parsedValue)
+            }
+            return parsedValue;
           });
+
         });
         return scope.$watch('ngModel', function (newVal, oldVal) {
           if (newVal !== parsedValue) {
@@ -82,6 +94,4 @@ angular.module('nouislider', []).directive('slider', function () {
       }
     }
   };
-});  /*
-//@ sourceMappingURL=app.js.map
-*/
+});
