@@ -11,12 +11,12 @@ angular.module('nouislider', []).directive('slider', function () {
       ngModel: '=',
       ngFrom: '=',
       ngTo: '=',
-      thenCall: '&'
+      onChange: '&onChange'
     },
     link: function (scope, element, attrs) {
 
-      var callback, fromParsed, parsedValue, slider, toParsed, thenCall;
-      thenCall = scope.thenCall
+      var callback, fromParsed, parsedValue, slider, toParsed, onChange;
+      onChange = scope.onChange
       slider = $(element);
       callback = scope.callback ? scope.callback : 'slide';
       if (scope.ngFrom != null && scope.ngTo != null) {
@@ -43,8 +43,8 @@ angular.module('nouislider', []).directive('slider', function () {
           return scope.$apply(function () {
             scope.ngFrom = fromParsed;
             scope.ngTo = toParsed;
-            if(thenCall && typeof(thenCall) == "function"){
-              thenCall(fromParsed, toParsed)
+            if(onChange && typeof(onChange) == "function"){
+              onChange(fromParsed, toParsed)
             }
             return toParsed;
           });
@@ -79,8 +79,8 @@ angular.module('nouislider', []).directive('slider', function () {
           parsedValue = parseFloat(slider.val());
           return scope.$apply(function () {
             scope.ngModel = parsedValue;
-            if(thenCall && typeof(thenCall) == "function"){
-              thenCall(parsedValue)
+            if(onChange && typeof(onChange) == "function"){
+              onChange(parsedValue)
             }
             return parsedValue;
           });
